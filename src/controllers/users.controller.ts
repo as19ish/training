@@ -22,7 +22,7 @@ import {UsersRepository} from '../repositories';
 export class UsersController {
   constructor(
     @repository(UsersRepository)
-    public usersRepository : UsersRepository,
+    public usersRepository: UsersRepository,
   ) {}
 
   @post('/users', {
@@ -57,9 +57,7 @@ export class UsersController {
       },
     },
   })
-  async count(
-    @param.where(Users) where?: Where<Users>,
-  ): Promise<Count> {
+  async count(@param.where(Users) where?: Where<Users>): Promise<Count> {
     return this.usersRepository.count(where);
   }
 
@@ -78,9 +76,7 @@ export class UsersController {
       },
     },
   })
-  async find(
-    @param.filter(Users) filter?: Filter<Users>,
-  ): Promise<Users[]> {
+  async find(@param.filter(Users) filter?: Filter<Users>): Promise<Users[]> {
     return this.usersRepository.find(filter);
   }
 
@@ -120,7 +116,8 @@ export class UsersController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Users, {exclude: 'where'}) filter?: FilterExcludingWhere<Users>
+    @param.filter(Users, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Users>,
   ): Promise<Users> {
     return this.usersRepository.findById(id, filter);
   }

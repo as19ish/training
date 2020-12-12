@@ -9,7 +9,8 @@ export class MySequence extends DefaultSequence {
     const {request} = context;
     try {
       this.log(
-        `Request ${request.method} ${request.url
+        `Request ${request.method} ${
+          request.url
         } started at ${requestTime.toString()}.
           Request Details
           Referer = ${request.headers.referer}
@@ -18,16 +19,17 @@ export class MySequence extends DefaultSequence {
           Remote Address (Proxy) = ${request.headers['x-forwarded-for']}`,
       );
       await super.handle(context);
-
     } catch (err) {
       this.log(
-        `Request ${request.method} ${request.url
+        `Request ${request.method} ${
+          request.url
         } errored out. Error :: ${JSON.stringify(err)} ${err}`,
       );
     } finally {
       this.log(
-        `Request ${request.method} ${request.url
-        } Completed in ${Date.now() - requestTime}ms`,
+        `Request ${request.method} ${request.url} Completed in ${
+          Date.now() - requestTime
+        }ms`,
       );
     }
   }

@@ -2,10 +2,14 @@ import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
 const config = {
-  name: 'inmemory',
-  connector: 'memory',
-  localStorage: '',
-  file: '',
+  name: 'pg',
+  connector: 'postgresql',
+  url: '',
+  host: 'localhost',
+  port: 5432,
+  user: 'postgres',
+  password: 'sourcefuse',
+  database: 'loopback_training',
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -13,14 +17,14 @@ const config = {
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
 // Learn more at https://loopback.io/doc/en/lb4/Life-cycle.html
 @lifeCycleObserver('datasource')
-export class InmemoryDataSource
+export class PgDataSource
   extends juggler.DataSource
   implements LifeCycleObserver {
-  static dataSourceName = 'inmemory';
+  static dataSourceName = 'pg';
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.inmemory', {optional: true})
+    @inject('datasources.config.pg', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);
