@@ -1,16 +1,18 @@
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import {ApplicationConfig, BindingKey} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
   RestExplorerBindings,
-  RestExplorerComponent,
+  RestExplorerComponent
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import * as dotenv from 'dotenv';
 import * as dotenvExt from 'dotenv-extended';
 import path from 'path';
+import {LoggerProvider} from './providers';
 import {MySequence} from './sequence';
+import {ILogger} from './types';
 
 export {ApplicationConfig};
 
@@ -37,6 +39,8 @@ export class UserCrudApplication extends BootMixin(
 
     // Set up the custom sequence
     this.sequence(MySequence);
+
+    this.bind(BindingKey.create<ILogger>('logger')).toProvider(LoggerProvider);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
