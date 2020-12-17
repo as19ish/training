@@ -9,8 +9,10 @@ import {
 import {ServiceMixin} from '@loopback/service-proxy';
 import * as dotenv from 'dotenv';
 import * as dotenvExt from 'dotenv-extended';
+import {AuthenticationComponent, Strategies} from 'loopback4-authentication';
 import path from 'path';
 import {LoggerProvider} from './providers';
+import {BearerTokenVerifyProvider} from './providers/bearer-token-verify.provider';
 import {MySequence} from './sequence';
 import {ILogger} from './types';
 
@@ -50,6 +52,9 @@ export class UserCrudApplication extends BootMixin(
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
+
+    this.component(AuthenticationComponent);
+    this.bind(Strategies.Passport.BEARER_TOKEN_VERIFIER).toProvider(BearerTokenVerifyProvider);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

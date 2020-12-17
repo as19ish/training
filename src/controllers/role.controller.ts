@@ -4,18 +4,23 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
+import {authenticate, STRATEGY} from 'loopback4-authentication';
 import {Role} from '../models';
 import {RoleRepository} from '../repositories';
 
@@ -25,6 +30,7 @@ export class RoleController {
     public roleRepository: RoleRepository,
   ) {}
 
+  @authenticate(STRATEGY.BEARER)
   @post('/roles', {
     responses: {
       '200': {
@@ -48,6 +54,7 @@ export class RoleController {
     return this.roleRepository.create(role);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/roles/count', {
     responses: {
       '200': {
@@ -60,6 +67,7 @@ export class RoleController {
     return this.roleRepository.count(where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/roles', {
     responses: {
       '200': {
@@ -79,6 +87,7 @@ export class RoleController {
     return this.roleRepository.find(filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/roles', {
     responses: {
       '200': {
@@ -101,6 +110,7 @@ export class RoleController {
     return this.roleRepository.updateAll(role, where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/roles/{id}', {
     responses: {
       '200': {
@@ -120,6 +130,7 @@ export class RoleController {
     return this.roleRepository.findById(id, filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/roles/{id}', {
     responses: {
       '204': {
@@ -141,6 +152,7 @@ export class RoleController {
     await this.roleRepository.updateById(id, role);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @put('/roles/{id}', {
     responses: {
       '204': {
@@ -155,6 +167,7 @@ export class RoleController {
     await this.roleRepository.replaceById(id, role);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @del('/roles/{id}', {
     responses: {
       '204': {

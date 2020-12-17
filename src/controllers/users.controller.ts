@@ -4,18 +4,19 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
+  del, get,
+  getModelSchemaRef, param,
+
+
   patch,
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
+import {authenticate, STRATEGY} from 'loopback4-authentication';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
 
@@ -25,30 +26,7 @@ export class UsersController {
     public usersRepository: UsersRepository,
   ) {}
 
-  @post('/users', {
-    responses: {
-      '200': {
-        description: 'Users model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Users)}},
-      },
-    },
-  })
-  async create(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Users, {
-            title: 'NewUsers',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    users: Omit<Users, 'id'>,
-  ): Promise<Users> {
-    return this.usersRepository.create(users);
-  }
-
+  @authenticate(STRATEGY.BEARER)
   @get('/users/count', {
     responses: {
       '200': {
@@ -61,6 +39,7 @@ export class UsersController {
     return this.usersRepository.count(where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/users', {
     responses: {
       '200': {
@@ -80,6 +59,7 @@ export class UsersController {
     return this.usersRepository.find(filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/users', {
     responses: {
       '200': {
@@ -102,6 +82,7 @@ export class UsersController {
     return this.usersRepository.updateAll(users, where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/users/{id}', {
     responses: {
       '200': {
@@ -122,6 +103,7 @@ export class UsersController {
     return this.usersRepository.findById(id, filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/users/{id}', {
     responses: {
       '204': {
@@ -143,6 +125,7 @@ export class UsersController {
     await this.usersRepository.updateById(id, users);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @put('/users/{id}', {
     responses: {
       '204': {
@@ -157,6 +140,7 @@ export class UsersController {
     await this.usersRepository.replaceById(id, users);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @del('/users/{id}', {
     responses: {
       '204': {

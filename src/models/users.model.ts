@@ -1,8 +1,19 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
-import {Customer} from './customer.model';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {Role} from './role.model';
 
-@model()
+@model({
+  settings: {
+    foreignKeys: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      fk_user_role: {
+        name: 'fk_user_role',
+        entity: 'Role',
+        entityKey: 'id',
+        foreignKey: 'role_id',
+      }
+    },
+  }
+})
 export class Users extends Entity {
   @property({
     type: 'number',
@@ -44,11 +55,21 @@ export class Users extends Entity {
   })
   phone: string;
 
-  @belongsTo(() => Customer)
-  customerId: number;
 
-  @belongsTo(() => Role)
-  roleId: number;
+  @belongsTo(() => Role, {keyTo: 'id', name: 'user_role'})
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  role_id: number;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  username: string;
+
+  @property({
+    type: 'string',
+  })
+  password?: string;
 
   constructor(data?: Partial<Users>) {
     super(data);

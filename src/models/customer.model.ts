@@ -1,6 +1,19 @@
-import {Entity, model, property} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {Users} from './users.model';
 
-@model({settings: {strict: false}})
+@model({
+  settings: {
+    foreignKeys: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      fk_customer_user: {
+        name: 'fk_customer_users',
+        entity: 'Users',
+        entityKey: 'id',
+        foreignKey: 'user_id',
+      }
+    },
+  }
+})
 export class Customer extends Entity {
   @property({
     type: 'number',
@@ -26,6 +39,10 @@ export class Customer extends Entity {
     required: true,
   })
   address: string;
+
+  @belongsTo(() => Users, {name: 'user', keyTo: 'id'})
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  user_id: number;
 
   // Define well-known properties here
 

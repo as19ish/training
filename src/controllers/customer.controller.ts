@@ -4,18 +4,23 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
+import {authenticate, STRATEGY} from 'loopback4-authentication';
 import {Customer} from '../models';
 import {CustomerRepository} from '../repositories';
 
@@ -25,6 +30,7 @@ export class CustomerController {
     public customerRepository: CustomerRepository,
   ) {}
 
+  @authenticate(STRATEGY.BEARER)
   @post('/customers', {
     responses: {
       '200': {
@@ -49,6 +55,7 @@ export class CustomerController {
     return this.customerRepository.create(customer);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/customers/count', {
     responses: {
       '200': {
@@ -61,6 +68,7 @@ export class CustomerController {
     return this.customerRepository.count(where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/customers', {
     responses: {
       '200': {
@@ -82,6 +90,7 @@ export class CustomerController {
     return this.customerRepository.find(filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/customers', {
     responses: {
       '200': {
@@ -104,6 +113,7 @@ export class CustomerController {
     return this.customerRepository.updateAll(customer, where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/customers/{id}', {
     responses: {
       '200': {
@@ -124,6 +134,7 @@ export class CustomerController {
     return this.customerRepository.findById(id, filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/customers/{id}', {
     responses: {
       '204': {
@@ -145,6 +156,7 @@ export class CustomerController {
     await this.customerRepository.updateById(id, customer);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @put('/customers/{id}', {
     responses: {
       '204': {
@@ -159,6 +171,7 @@ export class CustomerController {
     await this.customerRepository.replaceById(id, customer);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @del('/customers/{id}', {
     responses: {
       '204': {
