@@ -10,7 +10,7 @@ import {Users} from '../../../models';
 import {UsersRepository} from '../../../repositories';
 
 
-export class UsersController {
+export class SignUpController {
   constructor(
     @repository(UsersRepository)
     public usersRepository: UsersRepository,

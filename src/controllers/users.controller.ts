@@ -17,8 +17,10 @@ import {
   requestBody
 } from '@loopback/rest';
 import {authenticate, STRATEGY} from 'loopback4-authentication';
+import {authorize} from 'loopback4-authorization';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
+import {PermissionKey} from '../types';
 
 export class UsersController {
   constructor(
@@ -27,6 +29,7 @@ export class UsersController {
   ) {}
 
   @authenticate(STRATEGY.BEARER)
+  @authorize({permissions: [PermissionKey.ViewUsers]})
   @get('/users/count', {
     responses: {
       '200': {
@@ -40,6 +43,7 @@ export class UsersController {
   }
 
   @authenticate(STRATEGY.BEARER)
+  @authorize({permissions: [PermissionKey.ViewUsers]})
   @get('/users', {
     responses: {
       '200': {

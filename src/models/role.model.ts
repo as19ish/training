@@ -1,8 +1,9 @@
 import {Entity, model, property} from '@loopback/repository';
+import {Permissions} from 'loopback4-authorization';
 import {Roles} from '../types';
 
 @model({settings: {}})
-export class Role extends Entity {
+export class Role extends Entity implements Permissions<string> {
   @property({
     type: 'number',
     id: true,
@@ -27,6 +28,12 @@ export class Role extends Entity {
   })
   description?: string;
 
+  @property({
+    type: 'array',
+    itemType: 'string',
+  })
+  permissions: string[];
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
@@ -36,6 +43,7 @@ export class Role extends Entity {
   constructor(data?: Partial<Role>) {
     super(data);
   }
+
 }
 
 export interface RoleRelations {

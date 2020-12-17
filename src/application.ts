@@ -10,6 +10,7 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import * as dotenv from 'dotenv';
 import * as dotenvExt from 'dotenv-extended';
 import {AuthenticationComponent, Strategies} from 'loopback4-authentication';
+import {AuthorizationBindings, AuthorizationComponent} from 'loopback4-authorization';
 import path from 'path';
 import {LoggerProvider} from './providers';
 import {BearerTokenVerifyProvider} from './providers/bearer-token-verify.provider';
@@ -42,6 +43,7 @@ export class UserCrudApplication extends BootMixin(
     // Set up the custom sequence
     this.sequence(MySequence);
 
+
     this.bind(BindingKey.create<ILogger>('logger')).toProvider(LoggerProvider);
 
     // Set up default home page
@@ -51,10 +53,18 @@ export class UserCrudApplication extends BootMixin(
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
     });
-    this.component(RestExplorerComponent);
 
+    this.component(RestExplorerComponent);
     this.component(AuthenticationComponent);
+
     this.bind(Strategies.Passport.BEARER_TOKEN_VERIFIER).toProvider(BearerTokenVerifyProvider);
+
+    this.bind(AuthorizationBindings.CONFIG).to({
+      allowAlwaysPaths: ['/explorer'],
+    });
+
+    this.component(AuthorizationComponent);
+
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

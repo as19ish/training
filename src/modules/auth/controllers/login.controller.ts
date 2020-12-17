@@ -5,15 +5,19 @@ import {
   requestBody
 } from '@loopback/rest';
 import * as jwt from 'jsonwebtoken';
-import {UsersRepository} from '../../../repositories';
+import {authorize} from 'loopback4-authorization';
+import {RoleRepository, UsersRepository} from '../../../repositories';
 import {LoginRequest} from '../models/login-request.dto';
 
 export class LoginController {
   constructor(
     @repository(UsersRepository)
     public usersRepository: UsersRepository,
+    @repository(RoleRepository)
+    public roleRepository: RoleRepository
   ) {}
 
+  @authorize({permissions: ['*']})
   @post('/login', {
     responses: {
       '200': {
@@ -36,12 +40,18 @@ export class LoginController {
       loginRequest.username,
       loginRequest.password
     );
+    const role = await this.roleRepository.findOne({
+      where: {
+        id: user.role_id
+      }
+    });
     const accessToken = jwt.sign(
       {
         id: user.id,
         username: user.username,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        first_name: user.first_name
+        role: role?.name,
+        permissions: role?.permissions
+
       },
       process.env.JWT_SECRET as string,
       {

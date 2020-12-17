@@ -16,3 +16,8 @@ export enum LOG_LEVEL {
   ERROR,
   OFF,
 }
+
+export const enum PermissionKey {
+  ViewUsers = 'ViewUsers',
+  ViewRoles = 'ViewRoles'
+}

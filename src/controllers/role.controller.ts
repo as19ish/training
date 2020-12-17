@@ -8,21 +8,18 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param,
-
-
-  patch, post,
-
-
-
-
+  getModelSchemaRef,
+  param,
+  patch,
+  post,
   put,
-
   requestBody
 } from '@loopback/rest';
 import {authenticate, STRATEGY} from 'loopback4-authentication';
+import {authorize} from 'loopback4-authorization';
 import {Role} from '../models';
 import {RoleRepository} from '../repositories';
+import {PermissionKey} from '../types';
 
 export class RoleController {
   constructor(
@@ -68,6 +65,7 @@ export class RoleController {
   }
 
   @authenticate(STRATEGY.BEARER)
+  @authorize({permissions: [PermissionKey.ViewRoles]})
   @get('/roles', {
     responses: {
       '200': {
