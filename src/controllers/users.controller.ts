@@ -4,51 +4,32 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
+  del, get,
+  getModelSchemaRef, param,
+
+
   patch,
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
+import {authenticate, STRATEGY} from 'loopback4-authentication';
+import {authorize} from 'loopback4-authorization';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
+import {PermissionKey} from '../types';
 
 export class UsersController {
   constructor(
     @repository(UsersRepository)
-    public usersRepository : UsersRepository,
+    public usersRepository: UsersRepository,
   ) {}
 
-  @post('/users', {
-    responses: {
-      '200': {
-        description: 'Users model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Users)}},
-      },
-    },
-  })
-  async create(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Users, {
-            title: 'NewUsers',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    users: Omit<Users, 'id'>,
-  ): Promise<Users> {
-    return this.usersRepository.create(users);
-  }
-
+  @authenticate(STRATEGY.BEARER)
+  @authorize({permissions: [PermissionKey.ViewUsers]})
   @get('/users/count', {
     responses: {
       '200': {
@@ -57,12 +38,12 @@ export class UsersController {
       },
     },
   })
-  async count(
-    @param.where(Users) where?: Where<Users>,
-  ): Promise<Count> {
+  async count(@param.where(Users) where?: Where<Users>): Promise<Count> {
     return this.usersRepository.count(where);
   }
 
+  @authenticate(STRATEGY.BEARER)
+  @authorize({permissions: [PermissionKey.ViewUsers]})
   @get('/users', {
     responses: {
       '200': {
@@ -78,12 +59,11 @@ export class UsersController {
       },
     },
   })
-  async find(
-    @param.filter(Users) filter?: Filter<Users>,
-  ): Promise<Users[]> {
+  async find(@param.filter(Users) filter?: Filter<Users>): Promise<Users[]> {
     return this.usersRepository.find(filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/users', {
     responses: {
       '200': {
@@ -106,6 +86,7 @@ export class UsersController {
     return this.usersRepository.updateAll(users, where);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @get('/users/{id}', {
     responses: {
       '200': {
@@ -120,11 +101,13 @@ export class UsersController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Users, {exclude: 'where'}) filter?: FilterExcludingWhere<Users>
+    @param.filter(Users, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Users>,
   ): Promise<Users> {
     return this.usersRepository.findById(id, filter);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @patch('/users/{id}', {
     responses: {
       '204': {
@@ -146,6 +129,7 @@ export class UsersController {
     await this.usersRepository.updateById(id, users);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @put('/users/{id}', {
     responses: {
       '204': {
@@ -160,6 +144,7 @@ export class UsersController {
     await this.usersRepository.replaceById(id, users);
   }
 
+  @authenticate(STRATEGY.BEARER)
   @del('/users/{id}', {
     responses: {
       '204': {
